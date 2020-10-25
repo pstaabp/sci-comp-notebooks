@@ -2,7 +2,7 @@ module PlayingCards
 
 import Base.show
 
-export Card, Hand, isFullHouse
+export Card, Hand #, isFullHouse
 
 ranks = ['A','2','3','4','5','6','7','8','9','T','J','Q','K']
 suits = ['\u2660','\u2661','\u2662','\u2663']
