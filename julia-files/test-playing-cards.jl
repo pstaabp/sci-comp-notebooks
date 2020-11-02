@@ -8,7 +8,7 @@ end
 
 ## test the creation of a card
 
-
+## create a few cards for use later.
 c1=Card(12)
 c2=Card(12,1)
 c3=Card(29)
