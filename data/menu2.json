@@ -1,0 +1,11 @@
+{
+  "hamburger": {"options":["Cheddar","Mushrooms","Bacon"],"cost":9.0,"type":["Lunch","Dinner"]},
+  "onion soup":{"cost":5.0,"type":["Lunch","Dinner"],"sizes":["cup","bowl"]},
+  "pancakes":{"options":["Chocolate Chip","Buckwheat"],"cost":7.0,"type":["Breakfast"]},
+  "orange juice": {"type":"beverage", "sizes": ["small","large"], "cost":2.0},
+  "chocolate cake": {"type":"dessert","cost":4.50},
+  "french toast": {"cost":9.5,"type":["Breakfast"],"options":["strawberry","challah"]},
+  "chicken club": {"cost": 7.5,"type":["Lunch","Dinner"]},
+  "caesar salad": {"cost": 11.0,"type":["salad"],"options":["plain","salmon","chicken"]},
+  "pumpkin pie": {"cost": 5.0,"type": ["dessert"],"sizes":["small","large"]}
+}
