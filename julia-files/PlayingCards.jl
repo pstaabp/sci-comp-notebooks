@@ -12,7 +12,7 @@ suits = ['\u2660','\u2661','\u2662','\u2663']
 """
     Card(r::Int, s::Int)
 
-Create a Card object that represents a playing card with rank `r` and suit `s`.  The rank must satisfy `1<=r<=13` and the suit represents `1<=s<=4`.   In addition, one can make a Card with a single integer `n` that satifies `1<=n<=52`. Lastly, You can create a Card with a string consisting of the rank as `A,1,2,3,...,9,T,J,Q,K` and the suit ♣,♠,♡,♢. 
+Create a Card object that represents a playing card with rank `r` and suit `s`.  The rank must satisfy `1<=r<=13` and the suit represents `1<=s<=4`.   In addition, one can make a Card with a single integer `n` that satifies `1<=n<=52`. Lastly, You can create a Card with a string consisting of the rank as `A,1,2,3,...,9,T,J,Q,K` and the suit ♣,♠,♡,♢.
 
 # Examples
 ```julia-repl
@@ -47,9 +47,9 @@ struct Card
     function Card(str::String)
         length(str)==2 || throw(ArgumentError("The string should only be 2 characters"))
         local r = findfirst(a->a==str[1],ranks)
-        r != nothing &&  1 <= r <= 13 || throw(ArgumentError(string("The first character should be one of ",join(ranks,","))))
+        !isnothing(r) &&  1 <= r <= 13 || throw(ArgumentError(string("The first character should be one of ",join(ranks,","))))
         local s=findfirst(a->a==str[2],suits)
-        s != nothing && 1<= s <= 4 || throw(ArgumentError(string("The second character should be one of ",join(suits,","))))
+        !isnothing(s) && 1<= s <= 4 || throw(ArgumentError(string("The second character should be one of ",join(suits,","))))
         new(r,s)
     end
 end
@@ -57,7 +57,7 @@ end
 
 struct Hand
     cards::Array{Card,1}
-  
+
     Hand(cards::Array{Card,1}) = new(cards)
     Hand(cards::Array{String,1}) = new(map(Card,cards))
     Hand(s::String) = new(map(Card,map(String,split(s,','))))
@@ -74,7 +74,7 @@ end
 """
     isFullHouse(h::Hand)
 
-Returns a boolean if a given hand, `h` is a full house hand. 
+Returns a boolean if a given hand, `h` is a full house hand.
 """
 function isFullHouse(h::Hand)
     local r=sort(map(c->c.rank,h.cards))
@@ -99,13 +99,13 @@ end
 
 
 function runTrials(f::Function, trials::Integer)
-  local deck=collect(1:52) # creates the array [1,2,3,...,52] 
+  local deck=collect(1:52) # creates the array [1,2,3,...,52]
   local num_hands=0
   for i=1:trials
     shuffle!(deck)
-    h = Hand(map(Card,deck[1:5])) # creates a hand of the first five cards of the shuffled deck 
+    h = Hand(map(Card,deck[1:5])) # creates a hand of the first five cards of the shuffled deck
     if f(h)
-      num_hands+=1 
+      num_hands+=1
     end
   end
   num_hands/trials

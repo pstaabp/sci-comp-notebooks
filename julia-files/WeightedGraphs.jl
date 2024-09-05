@@ -37,7 +37,7 @@ struct Edge
 end
 
 """
-A weighted graph, that is a graph with edges that are weighted. 
+A weighted graph, that is a graph with edges that are weighted.
 
 ### Examples
 ```
@@ -49,11 +49,11 @@ struct WeightedGraph
   vertices::Vector{Vertex}
   edges::Vector{Edge}
   graph::SimpleGraph
-  
+
   function WeightedGraph(v::Vector{Vertex}, e::Vector{Edge}, g::SimpleGraph)
     new(v,e,g)
   end
-  
+
   function WeightedGraph()
     new([],[],SimpleGraph())
   end
@@ -80,9 +80,9 @@ addEdge!(g,e2)
 """
 function addEdge!(g::WeightedGraph, e::Edge)
   i = findfirst(n -> n.name == e.start, g.vertices)
-  i != nothing || throw(ArgumentError("The node with name $(edge.start) does not exist."))
+  isnothing(i) || throw(ArgumentError("The node with name $(edge.start) does not exist."))
   j = findfirst(n -> n.name == e.finish, g.vertices)
-  j != nothing || throw(ArgumentError("The node with name $(edge.finish) does not exist."))
+  isnothing(j) || throw(ArgumentError("The node with name $(edge.finish) does not exist."))
   e.weight >0 || throw(ArgumentError("The weight of $(edge.weight) must be positive"))
   push!(g.edges,e)
   add_edge!(g.graph,i,j)
@@ -104,7 +104,7 @@ addVertex!(g,v3)
 """
 function addVertex!(g::WeightedGraph, v::Vertex)
   i = findfirst(n -> n.name == v.name, g.vertices)
-  if i == nothing 
+  if isnothing(i)
     add_vertices!(g.graph,1)
     push!(g.vertices,v)
   else
