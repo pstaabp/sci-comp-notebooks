@@ -2,7 +2,9 @@ module PlayingCards
 
 import Base.show
 
-export Card, Hand, isFullHouse
+import Random: shuffle!
+
+export Card, Hand, isFullHouse, isRoyalFlush, runTrials
 
 ranks = ['A','2','3','4','5','6','7','8','9','T','J','Q','K']
 suits = ['\u2660','\u2661','\u2662','\u2663']
@@ -55,6 +57,7 @@ end
 
 struct Hand
     cards::Array{Card,1}
+  
     Hand(cards::Array{Card,1}) = new(cards)
     Hand(cards::Array{String,1}) = new(map(Card,cards))
     Hand(s::String) = new(map(Card,map(String,split(s,','))))
@@ -76,6 +79,36 @@ Returns a boolean if a given hand, `h` is a full house hand.
 function isFullHouse(h::Hand)
     local r=sort(map(c->c.rank,h.cards))
     r[2]==r[1] && r[5]==r[4] && (r[3]==r[2] || r[4]==r[3]) && r[2] != r[4]
+end
+
+function isOneSuit(h::Hand)
+  local s = map(c->c.suit,h.cards)
+  s[1]==s[2]==s[3]==s[4]==s[5]
+end
+
+function isRun(h::Hand)
+  local r = sort(map(c->c.rank,h.cards))
+  r[2]==r[1]+1 && r[3]==r[2]+1 && r[4]==r[3]+1 && r[5]==r[4]+1 ||
+  r[1]==1 && r[2]==10 && r[3]==11 && r[4]==12 && r[5]==13 ## ace high run
+end
+
+function isRoyalFlush(h::Hand)
+  local r = sort(map(c->c.rank,h.cards))
+  r[1]==1 && r[2]==10 && r[3]==11 && r[4]==12 && r[5]==13 && isOneSuit(h)
+end
+
+
+function runTrials(f::Function, trials::Integer)
+  local deck=collect(1:52) # creates the array [1,2,3,...,52] 
+  local num_hands=0
+  for i=1:trials
+    shuffle!(deck)
+    h = Hand(map(Card,deck[1:5])) # creates a hand of the first five cards of the shuffled deck 
+    if f(h)
+      num_hands+=1 
+    end
+  end
+  num_hands/trials
 end
 
 end #module PlayingCards

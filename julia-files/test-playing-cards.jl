@@ -52,7 +52,7 @@ fh2 = Hand("3♠,3♢,3♣,A♣,3♡") # this is a 4-of-a-kind
     @testset "Full House" begin
         @test isFullHouse(fh1) 
         @test !isFullHouse(fh2)
-    end
+end;
     
 
 
