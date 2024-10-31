@@ -11,8 +11,13 @@ suits = ['\u2660','\u2661','\u2662','\u2663']
 
 """
     Card(r::Int, s::Int)
+    Card(i::Int)
+    Card(str::String)
 
-Create a Card object that represents a playing card with rank `r` and suit `s`.  The rank must satisfy `1<=r<=13` and the suit represents `1<=s<=4`.   In addition, one can make a Card with a single integer `n` that satifies `1<=n<=52`. Lastly, You can create a Card with a string consisting of the rank as `A,1,2,3,...,9,T,J,Q,K` and the suit ♣,♠,♡,♢.
+Create a Card object that represents a playing card with rank `r` and suit `s`.  The rank must satisfy `1<=r<=13` and
+the suit represents `1<=s<=4`.   In addition, one can make a Card with a single integer `n`
+that satifies `1<=n<=52`. Lastly, You can create a Card with a string consisting of the rank as `A,1,2,3,...,9,T,J,Q,K`
+and the suit ♣,♠,♡,♢.
 
 # Examples
 ```julia-repl
@@ -54,12 +59,32 @@ struct Card
     end
 end
 
+"""
+  Hand(cards::Vector{Card})
+  Hand(cards::Vector{String})
+  Hand(str::String)
 
+Create a Hand (set of cards) from either a vector of cards, a Vector of Strings or a String.  The argument for `Hand` can
+be a Vector of Cards or a Vector of Strings (if each string can create a Card).  Also, if a string consists of Cards separated by
+  commas, then a Hand can be created.
+
+# Examples
+```julia-repl
+julia> Hand([Card(10,3), Card(11,3), Card(5,2), Card(5,3), Card(1,1)])
+[T♢,J♢,5♡,5♢,A♠]
+
+julia> Hand(["T♢","J♢","5♡","5♢","A♠"])
+[T♢,J♢,5♡,5♢,A♠]
+
+julia> Hand("T♢,J♢,5♡,5♢,A♠")
+[T♢,J♢,5♡,5♢,A♠]
+```
+"""
 struct Hand
-    cards::Array{Card,1}
+    cards::Vector{Card}
 
-    Hand(cards::Array{Card,1}) = new(cards)
-    Hand(cards::Array{String,1}) = new(map(Card,cards))
+    Hand(cards::Vector{Card}) = new(cards)
+    Hand(cards::Vector{String}) = new(map(Card,cards))
     Hand(s::String) = new(map(Card,map(String,split(s,','))))
 end
 
@@ -74,30 +99,54 @@ end
 """
     isFullHouse(h::Hand)
 
-Returns a boolean if a given hand, `h` is a full house hand.
+Returns true if a given hand, `h` is a full house hand.  It returns false otherwise.
 """
 function isFullHouse(h::Hand)
     local r=sort(map(c->c.rank,h.cards))
     r[2]==r[1] && r[5]==r[4] && (r[3]==r[2] || r[4]==r[3]) && r[2] != r[4]
 end
 
+"""
+    isOneSuit(h::Hand)
+
+Returns a true if for a given hand, `h` all cards in the Hand are the same suit.  It returns false otherwise.
+"""
 function isOneSuit(h::Hand)
   local s = map(c->c.suit,h.cards)
   s[1]==s[2]==s[3]==s[4]==s[5]
 end
 
+"""
+    isRun(h::Hand)
+
+Returns true if for a given hand, `h` all cards in the Hand are the same suit.  It returns false otherwise.
+"""
 function isRun(h::Hand)
   local r = sort(map(c->c.rank,h.cards))
   r[2]==r[1]+1 && r[3]==r[2]+1 && r[4]==r[3]+1 && r[5]==r[4]+1 ||
   r[1]==1 && r[2]==10 && r[3]==11 && r[4]==12 && r[5]==13 ## ace high run
 end
 
+"""
+    isRoyalFlush(h::Hand)
+
+Returns a boolean if the given hand, `h`, is a RoyalFlush
+"""
 function isRoyalFlush(h::Hand)
   local r = sort(map(c->c.rank,h.cards))
   r[1]==1 && r[2]==10 && r[3]==11 && r[4]==12 && r[5]==13 && isOneSuit(h)
 end
 
+"""
+    runTrials(f::Function, trials::Integer)
 
+For `trials` randomly selected hands, run the function `f` on each hand.  The fraction of hands where `f` is true is returned.
+
+### Example
+```julia-repl
+runTrials(isFullHouse, 10_000_000)
+```
+"""
 function runTrials(f::Function, trials::Integer)
   local deck=collect(1:52) # creates the array [1,2,3,...,52]
   local num_hands=0
