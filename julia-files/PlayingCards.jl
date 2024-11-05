@@ -137,27 +137,6 @@ function isRoyalFlush(h::Hand)
   r[1]==1 && r[2]==10 && r[3]==11 && r[4]==12 && r[5]==13 && isOneSuit(h)
 end
 
-"""
-    runTrials(f::Function, trials::Integer)
 
-For `trials` randomly selected hands, run the function `f` on each hand.  The fraction of hands where `f` is true is returned.
-
-### Example
-```julia-repl
-runTrials(isFullHouse, 10_000_000)
-```
-"""
-function runTrials(f::Function, trials::Integer)
-  local deck=collect(1:52) # creates the array [1,2,3,...,52]
-  local num_hands=0
-  for i=1:trials
-    shuffle!(deck)
-    h = Hand(map(Card,deck[1:5])) # creates a hand of the first five cards of the shuffled deck
-    if f(h)
-      num_hands+=1
-    end
-  end
-  num_hands/trials
-end
 
 end #module PlayingCards
