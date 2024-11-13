@@ -18,7 +18,7 @@ end
   @test !occursin(int_re, "+12.34")
 end
 
-run_dec_test = false
+run_dec_test = true
 
 @testset "Matching Decimals" begin
   @test occursin(dec_re, "12.34") skip = !run_dec_test
@@ -36,10 +36,10 @@ end
 @testset "Non decimals" begin
   @test !occursin(dec_re, "1234") skip = !run_dec_test
   @test !occursin(dec_re, "-1234") skip = !run_dec_test
-
+  @test !occursin(dec_re, ".") skip = !run_dec_test
 end
 
-run_parse_test = false
+run_parse_test = true
 
 @testset "Parse integers" begin
   @test parseIntOrDec("1234") == 1234 skip = !run_parse_test
